@@ -71,13 +71,13 @@ export const TailwindModal = ({
       walletRepo?.connect(name);
 
       // 1ms timeout prevents _render from determining the view to show first
-      setTimeout(() => {
-        const wallet = walletRepo?.getWallet(name);
-        if (wallet?.walletInfo.mode === "wallet-connect") {
-          setCurrentView(ModalView.QRCode);
-          setQRWallet(wallet);
-        }
-      }, 1);
+      // setTimeout(() => {
+      //   const wallet = walletRepo?.getWallet(name);
+      //   if (wallet?.walletInfo.mode === "wallet-connect") {
+      //     setCurrentView(ModalView.QRCode);
+      //     setQRWallet(wallet);
+      //   }
+      // }, 1);
     },
     [walletRepo]
   );

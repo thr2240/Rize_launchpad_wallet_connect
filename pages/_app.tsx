@@ -5,7 +5,6 @@ import { defaultTheme, ChainProvider } from "@cosmos-kit/react";
 import { wallets as keplrWallet } from "@cosmos-kit/keplr";
 import { wallets as cosmostationWallets } from "@cosmos-kit/cosmostation";
 import { wallets as leapwallets } from "@cosmos-kit/leap";
-import { ChakraProvider } from "@chakra-ui/react";
 
 import { TailwindModal } from "../components";
 import { ThemeProvider } from "../contexts/theme";
@@ -30,7 +29,7 @@ function CreateCosmosApp({ Component, pageProps }: AppProps) {
       wallets={[
         ...keplrWallet,
         ...cosmostationWallets,
-        ...leapwallets,
+        ...leapwallets
       ]}
       walletConnectOptions={{
         signClient: {
