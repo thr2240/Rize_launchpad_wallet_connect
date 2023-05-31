@@ -52,7 +52,7 @@ function CreateCosmosApp({ Component, pageProps }: AppProps) {
         },
       }}
       wrappedWithChakra={true}
-      // signerOptions={signerOptions}
+      signerOptions={signerOptions}
       walletModal={TailwindModal}
     >
       <ThemeProvider>
