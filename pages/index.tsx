@@ -1173,7 +1173,7 @@ export default function Home() {
       <div className="absolute z-10 bg-[#000000] w-full min-h-[80px] text-white flex items-center justify-between">
         <Logo className="w-[120px] ml-10" />
         <div className="flex items-center">
-          {isInMintingWL === true && (
+          {isCommunityMember === true && (
             <div className="ml-10 flex items-center gap-2">
               <div className="relative dropdown">
                 <div className={`dropbtn p-2`}>
