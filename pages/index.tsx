@@ -98,6 +98,7 @@ export default function Home() {
   const [publicMintDate, setPublicMintDate] = useState("5-1-23 12PM");
   const [newItemPrice, setNewItemPrice] = useState(0);
   const [isRizeMember, setIsRizeMember] = useState(false);
+  const [showOptionsDropDown, setShowOptionsDropdown] = useState(false);
   const [showNetworkDropDown, setShowNetworkDropdown] = useState(false);
   const [showCosmosWalletsDropdown, setShowCosmosWalletsDropdown] =
     useState(false);
@@ -250,7 +251,9 @@ export default function Home() {
 
   useEffect(() => {
     if (!isEmpty(address || "")) {
+      console.log("address    >>>>>>>> ");
       LoginWithCosmWallet();
+      checkIsCommunityMember(address as string);
     }
   }, [address]);
 
@@ -402,6 +405,7 @@ export default function Home() {
       const accounts = await web3.eth.getAccounts();
 
       setGlobalProvider(provider);
+      alert(accounts[0]);
 
       if (accounts[0]) {
         setWalletAddress(accounts[0]);
@@ -1174,13 +1178,16 @@ export default function Home() {
 
   return (
     <div className="lg:mx-auto">
-      <div className="absolute z-10 bg-[#000000] w-full min-h-[80px] text-white flex items-center justify-between">
+      <div className=" bg-[#000000] w-full min-h-[80px] text-white flex items-center justify-between">
         <Logo className="w-[120px] ml-10" />
         <div className="flex items-center">
           {isCommunityMember === true && (
             <div className="ml-10 flex items-center gap-2">
               <div className="relative dropdown">
-                <div className={`dropbtn p-2`}>
+                <div
+                  className={`dropbtn p-2`}
+                  onClick={() => setShowOptionsDropdown(!showOptionsDropDown)}
+                >
                   <div className="group py-3 px-6 h-[50px] rounded-full inline-flex items-center text-sm font-medium hover:text-opacity-100 relative !outline-none">
                     <div className="flex justify-center items-center py-3 px-5 bg-[#33ff00] rounded-xl">
                       <span className=" text-neutral-900 text-sm ml-2">
@@ -1189,65 +1196,67 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                <div className="dropdown-content">
-                  <div className="overflow-hidden rounded-2xl shadow-lg ring-1 bg-gray-400 border-[1px] border-[#33ff00] text-black w-[180px]">
-                    <div className="relative grid  px-2 py-2 w-full">
-                      <div
-                        className="py-2 px-2 transition cursor-pointer duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-gray-500  flex gap-2 items-center group w-full"
-                        onClick={() => handleMenuUploadFiles()}
-                      >
-                        <span className="group-hover:text-white text-neutral-900 text-sm">
-                          Upload folders
-                        </span>
-                      </div>
-                      {isRizeMember === true && (
+                {showOptionsDropDown === true && (
+                  <div className="absolute z-30 dropdown-content">
+                    <div className="overflow-hidden rounded-2xl shadow-lg ring-1 bg-gray-400 border-[1px] border-[#33ff00] text-black w-[180px]">
+                      <div className="relative grid  px-2 py-2 w-full">
                         <div
-                          className="py-2 px-2 mt-1  transition cursor-pointer duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-gray-500  flex gap-2 items-center group w-full"
-                          onClick={() => handleMenuUpdateWL()}
+                          className="py-2 px-2 transition cursor-pointer duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-gray-500  flex gap-2 items-center group w-full"
+                          onClick={() => handleMenuUploadFiles()}
                         >
                           <span className="group-hover:text-white text-neutral-900 text-sm">
-                            Update Whitelist
+                            Upload folders
                           </span>
                         </div>
-                      )}
-                      <div className="mt-3 h-8"></div>
-                      <div className=" px-2 mt-1 w-full ">
-                        <span className=" text-neutral-900 text-sm w-full text-center">
-                          Create mint price
-                        </span>
-                      </div>
-                      <div className=" px-2 mt-1 w-full flex ">
-                        <input
-                          className=" text-[#33ff00] text-sm w-1/2  p-1 bg-gray-500 rounded-lg text-center"
-                          type="number"
-                          min={0}
-                          max={1000}
-                          defaultValue={1}
-                          value={newItemPrice}
-                          onChange={(e) =>
-                            setNewItemPrice(Number(e.target.value))
-                          }
-                        />
-                        <span className=" text-[#33ff00] text-sm w-1/2 ml-1 p-1 bg-gray-500 rounded-lg text-center">
-                          {ACTIVE_CHAINS[currentNetworkSymbol]?.currency}
-                        </span>
-                      </div>
-                      <div className="mt-1 px-2 w-full flex ">
-                        <button
-                          className="w-full text-neutral-900 text-sm bg-gray-300 hover:bg-gray-600 hover:text-white py-1 rounded-lg"
-                          onClick={() => handleApplyNewPrice()}
-                        >
-                          Confirm
-                        </button>
+                        {isRizeMember === true && (
+                          <div
+                            className="py-2 px-2 mt-1  transition cursor-pointer duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-gray-500  flex gap-2 items-center group w-full"
+                            onClick={() => handleMenuUpdateWL()}
+                          >
+                            <span className="group-hover:text-white text-neutral-900 text-sm">
+                              Update Whitelist
+                            </span>
+                          </div>
+                        )}
+                        <div className="mt-3 h-8"></div>
+                        <div className=" px-2 mt-1 w-full ">
+                          <span className=" text-neutral-900 text-sm w-full text-center">
+                            Create mint price
+                          </span>
+                        </div>
+                        <div className=" px-2 mt-1 w-full flex ">
+                          <input
+                            className=" text-[#33ff00] text-sm w-1/2  p-1 bg-gray-500 rounded-lg text-center"
+                            type="number"
+                            min={0}
+                            max={1000}
+                            defaultValue={1}
+                            value={newItemPrice}
+                            onChange={(e) =>
+                              setNewItemPrice(Number(e.target.value))
+                            }
+                          />
+                          <span className=" text-[#33ff00] text-sm w-1/2 ml-1 p-1 bg-gray-500 rounded-lg text-center">
+                            {ACTIVE_CHAINS[currentNetworkSymbol]?.currency}
+                          </span>
+                        </div>
+                        <div className="mt-1 px-2 w-full flex ">
+                          <button
+                            className="w-full text-neutral-900 text-sm bg-gray-300 hover:bg-gray-600 hover:text-white py-1 rounded-lg"
+                            onClick={() => handleApplyNewPrice()}
+                          >
+                            Confirm
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           )}
         </div>
-        <div className="flex justify-center mt-1 items-center w-full absolute z-2">
+        <div className="flex justify-center mt-1 items-center w-full ">
           <div className=" text-lg text-[#33ff00] p-1 text-center rounded-lg">
             {" "}
             {!isMobile ? `Public Mint Date ${publicMintDate}` : <></>}
