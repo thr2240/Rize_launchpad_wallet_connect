@@ -5,6 +5,7 @@ import {
 } from "@cosmjs/cosmwasm-stargate";
 import { coin } from "@cosmjs/launchpad";
 import { convertDenomToMicroDenom } from "./utils";
+import { isDeliverTxFailure } from "@cosmjs/stargate";
 
 const defaultFee = {
   amount: [{ denom: "ucore", amount: "500" }],
@@ -82,7 +83,11 @@ export const batchMint = async (
         defaultFee
       );
     }
-    return result.transactionHash;
+    if (isDeliverTxFailure(result as any)) {
+      return -1;
+    } else {
+      return result.transactionHash;
+    }
   } catch (error) {
     throw error;
   }

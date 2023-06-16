@@ -188,7 +188,7 @@ export default function Home() {
             setDetailedCollection(updatedColl);
           }
         })
-        .catch((error) => { });
+        .catch((error) => {});
     }, 1000);
   }, []);
 
@@ -204,21 +204,22 @@ export default function Home() {
         setWeb3Modal(web3modl as any);
       }
       loadClient();
-    } catch (error: any) { }
+    } catch (error: any) {}
   }, []);
 
   useEffect(() => {
     let dateTimeStrInterval = setInterval(() => {
       let nowTime = new Date();
-      let datetimestr = `${nowTime.getDate()}-${nowTime.getMonth() + 1
-        }-${nowTime.getFullYear()} ${nowTime.getHours()}h GMT`;
+      let datetimestr = `${nowTime.getDate()}-${
+        nowTime.getMonth() + 1
+      }-${nowTime.getFullYear()} ${nowTime.getHours()}h GMT`;
       setPublicMintDate(datetimestr);
     }, 10000);
     return () => {
       if (dateTimeStrInterval) {
         try {
           clearInterval(dateTimeStrInterval);
-        } catch (err) { }
+        } catch (err) {}
       }
     };
   }, []);
@@ -270,16 +271,17 @@ export default function Home() {
           setAvailableItemsForMint([]);
           setConsideringCollectionName(updatedColl?.name || "");
           //total item count of coll,
+          let filteredItems = filterNotPendingItems(updatedColl?.items);
           let totalItemCount =
-            Number(updatedColl?.items?.length || 0) +
+            Number(filteredItems?.length || 0) +
             Number(updatedColl?.totalItemNumberInCID || 0) -
             Number(updatedColl?.mintedCountOfCID || 0);
           setTotalItems(totalItemCount);
           //total item count minted
-          setTotalMinted(updatedColl?.items?.length || 0);
+          setTotalMinted(filteredItems?.length || 0);
           setMaxCount(
             Number(updatedColl?.totalItemNumberInCID || 0) -
-            Number(updatedColl?.mintedCountOfCID || 0)
+              Number(updatedColl?.mintedCountOfCID || 0)
           );
           let notMintedItems = [];
 
@@ -289,8 +291,9 @@ export default function Home() {
           if (maxCount > 9) maxCount = 9;
           for (let idx = 1; idx < maxCount + 1; idx++) {
             try {
-              let url = `${PINATA_GATEWAY}${updatedColl.jsonFolderCID}/${Number(updatedColl.mintedCountOfCID) + Number(idx)
-                }.json`;
+              let url = `${PINATA_GATEWAY}${updatedColl.jsonFolderCID}/${
+                Number(updatedColl.mintedCountOfCID) + Number(idx)
+              }.json`;
               let item = await axios.get(url);
               notMintedItems.push(item.data);
             } catch (err) {
@@ -301,7 +304,7 @@ export default function Home() {
           refreshMintedItems();
         }
       })
-      .catch((err) => { });
+      .catch((err) => {});
   }, [selectedColl]);
 
   const isSupportedNetwork = (currentNetwork: number) => {
@@ -345,7 +348,7 @@ export default function Home() {
         }
         setSigningClient(sicl as any);
         return sicl;
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -366,7 +369,7 @@ export default function Home() {
           router.push("/");
         }
       })
-      .catch(function (error: any) { });
+      .catch(function (error: any) {});
   };
 
   const LoginWithCosmWallet = () => {
@@ -386,7 +389,7 @@ export default function Home() {
           router.push("/");
         }
       })
-      .catch(function (error: any) { });
+      .catch(function (error: any) {});
   };
 
   const onClickConnectEVMWallet = async () => {
@@ -516,7 +519,7 @@ export default function Home() {
                       setDetailedCollection(updatedColl);
                     }
                   })
-                  .catch((err: any) => { });
+                  .catch((err: any) => {});
               }, 200);
             } else toast.error("Failed in applying new minting price.");
           })
@@ -611,28 +614,31 @@ export default function Home() {
                         setDetailedCollection(updatedColl);
                         setConsideringCollectionName(updatedColl?.name || "");
                         //total item count of coll,
+                        let filterdItems = filterNotPendingItems(
+                          updatedColl?.items
+                        );
                         let totalItemCount =
-                          Number(updatedColl?.items?.length || 0) +
+                          Number(filterdItems?.length || 0) +
                           Number(updatedColl?.totalItemNumberInCID || 0) -
                           Number(updatedColl?.mintedCountOfCID || 0);
                         setTotalItems(totalItemCount);
-                        setTotalMinted(updatedColl?.items?.length || 0);
+                        setTotalMinted(filterdItems?.length || 0);
                         setMaxCount(
                           Number(updatedColl?.totalItemNumberInCID || 0) -
-                          Number(updatedColl?.mintedCountOfCID || 0)
+                            Number(updatedColl?.mintedCountOfCID || 0)
                         );
                         setTimeout(() => {
                           refreshWithNotMintedItems();
                         }, 300);
                       }
                     })
-                    .catch((error) => { });
+                    .catch((error) => {});
                 }, 100);
               }
             })
-            .catch((error) => { });
+            .catch((error) => {});
         })
-        .catch((error) => { });
+        .catch((error) => {});
     }
   };
 
@@ -646,8 +652,9 @@ export default function Home() {
       let notMintedItems = [];
       for (let idx = 1; idx < fetchCount + 1; idx++) {
         try {
-          let url = `${PINATA_GATEWAY}${(detailedCollection as any).jsonFolderCID
-            }/${Number(fetchStartId) + Number(idx)}.json`;
+          let url = `${PINATA_GATEWAY}${
+            (detailedCollection as any).jsonFolderCID
+          }/${Number(fetchStartId) + Number(idx)}.json`;
           let item = await axios.get(url);
           notMintedItems.push(item.data);
         } catch (err) {
@@ -679,7 +686,7 @@ export default function Home() {
       .then((response) => {
         setMyItemsOnConsideringColl(response.data.data);
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
 
   const handleClickMint = async () => {
@@ -774,8 +781,9 @@ export default function Home() {
               let promisesForfetching = [] as Array<any>;
               let uris = [] as Array<any>;
               for (let idx = 0; idx < mintingIndexArray.length; idx++) {
-                let url = `${PINATA_GATEWAY}${(detailedCollection as any).jsonFolderCID
-                  }/${Number(mintingIndexArray[idx]) + Number(1)}.json`;
+                let url = `${PINATA_GATEWAY}${
+                  (detailedCollection as any).jsonFolderCID
+                }/${Number(mintingIndexArray[idx]) + Number(1)}.json`;
                 uris.push(url);
                 promisesForfetching.push(axios.get(url));
               }
@@ -794,8 +802,8 @@ export default function Home() {
                       getFIleType(notMintedItems[0].image) !== FILE_TYPE.IMAGE
                         ? DEFAULT_BULK_MINT_PREVIEW_IMAGE
                         : notMintedItems[0].image
-                          .toString()
-                          .replace("ipfs://", ""),
+                            .toString()
+                            .replace("ipfs://", ""),
                     collectionId: selectedColl?._id || "",
                     creator: HOMMIS_COLLECTION.owner || "",
                     owner: currentUser?._id || "",
@@ -818,13 +826,13 @@ export default function Home() {
 
                   setWorking(false);
                 })
-                .catch((error) => { });
+                .catch((error) => {});
             } else {
               toast.warn("The collection hae no remained item for mintng.");
               return;
             }
           })
-          .catch((error) => { });
+          .catch((error) => {});
       }, 5000);
     }
   };
@@ -874,6 +882,7 @@ export default function Home() {
     sel_JsonFiles: Array<any>,
     fmint = false
   ) => {
+    let countOfMintOperation = mintingCount;
     console.log(
       "saveMultipleItem() params ======= ",
       params,
@@ -937,7 +946,8 @@ export default function Home() {
                 selectedColl.address,
                 (params as any).metadataURIs,
                 names,
-                ((detailedCollection as any)?.mintingPrice || 0) * mintingCount,
+                ((detailedCollection as any)?.mintingPrice || 0) *
+                  countOfMintOperation,
                 fmint
               );
               //succeed, then update all items with token ids
@@ -948,8 +958,8 @@ export default function Home() {
                     idArray: IdArray,
                     collId: (detailedCollection as any)?._id || "",
                   })
-                  .then((response) => { })
-                  .catch((error) => { });
+                  .then((response) => {})
+                  .catch((error) => {});
                 setWorking(false);
                 return;
               } else {
@@ -960,14 +970,14 @@ export default function Home() {
                   })
                   .then((response) => {
                     if (response.data.code === 0) {
-                      toast.success("You've created NFTs sucessfully.");
+                      toast.success("You've created NFTs successfully.");
                       axios
                         .post(
                           `${config.API_URL}api/collection/increaseMintedCount`,
                           {
                             collId: selectedColl._id,
-                            addCount: mintingCount,
-                            mintedIndexs: mintingIdxs,
+                            addCount: countOfMintOperation,
+                            mintedIndexs: IdArray,
                           }
                         )
                         .then((response) => {
@@ -993,15 +1003,14 @@ export default function Home() {
                                         freemint: true,
                                       }
                                     )
-                                    .then((response) => { })
-                                    .catch((error) => { });
+                                    .then((response) => {})
+                                    .catch((error) => {});
                                 }
                               })
-                              .catch((err) => { });
+                              .catch((err) => {});
                           }, 200);
                         })
-                        .catch((err) => { });
-                      router.push("/page-author/" + (currentUser as any)?._id);
+                        .catch((err) => {});
                     }
                   })
                   .catch((error) => {
@@ -1011,8 +1020,8 @@ export default function Home() {
                         idArray: IdArray,
                         collId: (detailedCollection as any)?._id || "",
                       })
-                      .then((response) => { })
-                      .catch((error1) => { });
+                      .then((response) => {})
+                      .catch((error1) => {});
                   });
               }
             } catch (error) {
@@ -1023,8 +1032,8 @@ export default function Home() {
                   idArray: IdArray,
                   collId: (detailedCollection as any)?._id || "",
                 })
-                .then((response) => { })
-                .catch((error1) => { });
+                .then((response) => {})
+                .catch((error1) => {});
               setWorking(false);
               return;
             }
@@ -1054,12 +1063,11 @@ export default function Home() {
                           updatedColl(updatedColl);
                         }
                       })
-                      .catch((err) => { });
+                      .catch((err) => {});
                   }, 200);
                 })
-                .catch((err) => { });
+                .catch((err) => {});
             }
-            router.push("/page-author/" + (currentUser as any)?._id);
           }
           setWorking(false);
         } else {
@@ -1074,27 +1082,37 @@ export default function Home() {
       });
   };
 
-  const updateUI = async (colelctionInfo: any) => {
+  const filterNotPendingItems = (items: any) => {
+    let filteredItems = [];
+    if (isEmpty(items) === false) {
+      filteredItems = items.filter((xitem: any) => xitem?.isPending !== true);
+    }
+    return filteredItems;
+  };
+
+  const updateUI = async (collectionInfo: any) => {
+    let notPendingItems = filterNotPendingItems(collectionInfo?.items);
     let totalItemCount =
-      Number(colelctionInfo?.items?.length || 0) +
-      Number(colelctionInfo?.totalItemNumberInCID || 0) -
-      Number(colelctionInfo?.mintedCountOfCID || 0);
+      Number(notPendingItems?.length || 0) +
+      Number(collectionInfo?.totalItemNumberInCID || 0) -
+      Number(collectionInfo?.mintedCountOfCID || 0);
     setTotalItems(totalItemCount);
     //total item count minted
-    setTotalMinted(colelctionInfo?.items?.length || 0);
+    setTotalMinted(notPendingItems?.length || 0);
     setMaxCount(
-      Number(colelctionInfo?.totalItemNumberInCID || 0) -
-      Number(colelctionInfo?.mintedCountOfCID || 0)
+      Number(collectionInfo?.totalItemNumberInCID || 0) -
+        Number(collectionInfo?.mintedCountOfCID || 0)
     );
     let notMintedItems = [];
     let maxCount =
-      Number(colelctionInfo?.totalItemNumberInCID || 0) -
-      Number(colelctionInfo?.mintedCountOfCID || 0);
+      Number(collectionInfo?.totalItemNumberInCID || 0) -
+      Number(collectionInfo?.mintedCountOfCID || 0);
     if (maxCount > 9) maxCount = 9;
     for (let idx = 1; idx < maxCount + 1; idx++) {
       try {
-        let url = `${PINATA_GATEWAY}${colelctionInfo.jsonFolderCID}/${Number(colelctionInfo.mintedCountOfCID) + Number(idx)
-          }.json`;
+        let url = `${PINATA_GATEWAY}${collectionInfo.jsonFolderCID}/${
+          Number(collectionInfo.mintedCountOfCID) + Number(idx)
+        }.json`;
         let item = await axios.get(url);
         notMintedItems.push(item.data);
       } catch (err) {
