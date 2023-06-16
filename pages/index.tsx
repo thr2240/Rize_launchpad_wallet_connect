@@ -914,172 +914,178 @@ export default function Home() {
         metas.push(metaList);
       }
     }
-    await axios
-      .post(`${config.API_URL}api/item/bulkcreate522`, {
-        params,
-        names,
-        descriptions,
-        paths,
-        metas,
-      })
-      .then(async function (response) {
-        if (response.status === 200) {
-          const IdArray = [...response.data];
-          if (currentNetworkSymbol === PLATFORM_NETWORKS.COREUM) {
-            let sicl = await getSigningCosmWasmClient();
-            if (!sicl || !address) {
-              console.error("stargateClient undefined or address undefined.");
-              return;
-            }
-            var prices = [];
-            for (let idx = 0; idx < IdArray.length; idx++) prices[idx] = 0;
-            //do transaction
-            try {
-              let colllectionInfo = await collectionConfig(
-                client as any,
-                (selectedColl as any)?.address
-              );
-              let startId = (colllectionInfo as any).unused_token_id;
-              let txHash = await batchMint(
-                sicl as any,
-                (currentUser as any).address,
-                selectedColl.address,
-                (params as any).metadataURIs,
-                names,
-                ((detailedCollection as any)?.mintingPrice || 0) *
-                  countOfMintOperation,
-                fmint
-              );
-              //succeed, then update all items with token ids
-              if (txHash == -1) {
-                toast.error("Network error.");
-                axios
-                  .post(`${config.API_URL}api/item/deleteManyByIds`, {
-                    idArray: IdArray,
-                    collId: (detailedCollection as any)?._id || "",
-                  })
-                  .then((response) => {})
-                  .catch((error) => {});
-                setWorking(false);
-                return;
-              } else {
-                axios
-                  .post(`${config.API_URL}api/item/updateTokenIds`, {
-                    idArray: IdArray,
-                    startTokenId: startId,
-                  })
-                  .then((response) => {
-                    if (response.data.code === 0) {
-                      toast.success("You've created NFTs successfully.");
-                      axios
-                        .post(
-                          `${config.API_URL}api/collection/increaseMintedCount`,
-                          {
-                            collId: selectedColl._id,
-                            addCount: countOfMintOperation,
-                            mintedIndexs: IdArray,
-                          }
-                        )
-                        .then((response) => {
-                          setMintingIdxs([]);
-                          setMintingCount(1);
-                          setTimeout(() => {
-                            axios
-                              .post(`${config.API_URL}api/collection/detail`, {
-                                id: selectedColl._id,
-                              })
-                              .then((response) => {
-                                if (response.data.code === 0) {
-                                  let updatedColl = response.data.data;
-
-                                  setDetailedCollection(updatedColl);
-
-                                  updateUI(updatedColl);
-                                  axios
-                                    .post(
-                                      `${config.API_URL}api/users/setFreeMintStatus`,
-                                      {
-                                        addr: (currentUser as any)?.address,
-                                        freemint: true,
-                                      }
-                                    )
-                                    .then((response) => {})
-                                    .catch((error) => {});
-                                }
-                              })
-                              .catch((err) => {});
-                          }, 200);
-                        })
-                        .catch((err) => {});
-                    }
-                  })
-                  .catch((error) => {
-                    toast.error("Server side error.");
-                    axios
-                      .post(`${config.API_URL}api/item/deleteManyByIds`, {
-                        idArray: IdArray,
-                        collId: (detailedCollection as any)?._id || "",
-                      })
-                      .then((response) => {})
-                      .catch((error1) => {});
-                  });
-              }
-            } catch (error) {
-              toast.error((error && (error as any).message) || "");
-              //if tx fail, then delete all items on DB
-              axios
-                .post(`${config.API_URL}api/item/deleteManyByIds`, {
-                  idArray: IdArray,
-                  collId: (detailedCollection as any)?._id || "",
-                })
-                .then((response) => {})
-                .catch((error1) => {});
-              setWorking(false);
-              return;
-            }
-          } else if (isSupportedEVMNetwork(currentNetworkSymbol) === true) {
-            if (isSupportedEVMNetwork(currentNetworkSymbol)) {
-              toast.success("You've created NFTs sucessfully.");
-
-              axios
-                .post(`${config.API_URL}api/collection/increaseMintedCount`, {
-                  collId: selectedColl._id,
-                  addCount: mintingCount,
-                  mintedIndexs: mintingIdxs,
-                })
-                .then((response) => {
-                  setMintingIdxs([]);
-                  setMintingCount(1);
-                  setTimeout(() => {
-                    axios
-                      .post(`${config.API_URL}api/collection/detail`, {
-                        id: selectedColl._id,
-                      })
-                      .then((response) => {
-                        if (response.data.code === 0) {
-                          let updatedColl = response.data.data;
-
-                          setDetailedCollection(updatedColl);
-                          updatedColl(updatedColl);
-                        }
-                      })
-                      .catch((err) => {});
-                  }, 200);
-                })
-                .catch((err) => {});
-            }
-          }
-          setWorking(false);
-        } else {
-          setWorking(false);
-          toast.error("Failed in multiple items uploading");
+    if (currentNetworkSymbol === PLATFORM_NETWORKS.COREUM) {
+      try {
+        let sicl = await getSigningCosmWasmClient();
+        if (!sicl || !address) {
+          console.error("stargateClient undefined or address undefined.");
+          return;
         }
-      })
-      .catch(function (error) {
-        console.log("multiple uploadin error : ", error);
+        //do transaction
+        try {
+          const colllectionInfo = await collectionConfig(
+            client as any,
+            (selectedColl as any)?.address
+          );
+          const startId = (colllectionInfo as any).unused_token_id;
+          let txHash = await batchMint(
+            sicl as any,
+            (currentUser as any).address,
+            selectedColl.address,
+            (params as any).metadataURIs,
+            names,
+            ((detailedCollection as any)?.mintingPrice || 0) *
+              countOfMintOperation,
+            fmint
+          );
+          //succeed, then update all items with token ids
+          if (txHash == -1) {
+            toast.error("Network error.");
+            setWorking(false);
+            return;
+          } else {
+            await axios
+              .post(`${config.API_URL}api/item/bulkcreate522`, {
+                params,
+                names,
+                descriptions,
+                paths,
+                metas,
+              })
+              .then(async function (response) {
+                if (response.status === 200) {
+                  const IdArray = [...response.data];
+                  var prices = [];
+                  for (let idx = 0; idx < IdArray.length; idx++)
+                    prices[idx] = 0;
+                  axios
+                    .post(`${config.API_URL}api/item/updateTokenIds`, {
+                      idArray: IdArray,
+                      startTokenId: startId,
+                    })
+                    .then((response) => {
+                      if (response.data.code === 0) {
+                        toast.success("You've created NFTs successfully.");
+                        axios
+                          .post(
+                            `${config.API_URL}api/collection/increaseMintedCount`,
+                            {
+                              collId: selectedColl._id,
+                              addCount: countOfMintOperation,
+                              mintedIndexs: IdArray,
+                            }
+                          )
+                          .then((response) => {
+                            setMintingIdxs([]);
+                            setMintingCount(1);
+                            setTimeout(() => {
+                              axios
+                                .post(
+                                  `${config.API_URL}api/collection/detail`,
+                                  {
+                                    id: selectedColl._id,
+                                  }
+                                )
+                                .then((response) => {
+                                  if (response.data.code === 0) {
+                                    let updatedColl = response.data.data;
+
+                                    setDetailedCollection(updatedColl);
+
+                                    updateUI(updatedColl);
+                                    axios
+                                      .post(
+                                        `${config.API_URL}api/users/setFreeMintStatus`,
+                                        {
+                                          addr: (currentUser as any)?.address,
+                                          freemint: true,
+                                        }
+                                      )
+                                      .then((response) => {
+                                        setWorking(false);
+                                      })
+                                      .catch((error) => {
+                                        setWorking(false);
+                                      });
+                                  }
+                                  setWorking(false);
+                                })
+                                .catch((err) => {
+                                  setWorking(false);
+                                });
+                            }, 200);
+                          })
+                          .catch((err) => {
+                            setWorking(false);
+                          });
+                      }
+                    })
+                    .catch((error) => {
+                      setWorking(false);
+                    });
+                }
+              })
+              .catch((error) => {
+                setWorking(false);
+              });
+          }
+        } catch (error) {
+          setWorking(false);
+        }
+      } catch (error) {
         setWorking(false);
-        toast.error("Failed in multiple items uploading");
-      });
+      }
+    } else if (isSupportedEVMNetwork(currentNetworkSymbol) === true) {
+      await axios
+        .post(`${config.API_URL}api/item/bulkcreate522`, {
+          params,
+          names,
+          descriptions,
+          paths,
+          metas,
+        })
+        .then(async function (response) {
+          if (response.status === 200) {
+            toast.success("You've created NFTs successfully.");
+
+            axios
+              .post(`${config.API_URL}api/collection/increaseMintedCount`, {
+                collId: selectedColl._id,
+                addCount: mintingCount,
+                mintedIndexs: mintingIdxs,
+              })
+              .then((response) => {
+                setMintingIdxs([]);
+                setMintingCount(1);
+                setTimeout(() => {
+                  axios
+                    .post(`${config.API_URL}api/collection/detail`, {
+                      id: selectedColl._id,
+                    })
+                    .then((response) => {
+                      if (response.data.code === 0) {
+                        let updatedColl = response.data.data;
+
+                        setDetailedCollection(updatedColl);
+                        updatedColl(updatedColl);
+                      }
+                    })
+                    .catch((err) => {
+                      setWorking(false);
+                    });
+                }, 200);
+              })
+              .catch((err) => {
+                setWorking(false);
+              });
+          } else {
+            setWorking(false);
+          }
+        })
+        .catch((error) => {
+          setWorking(false);
+        });
+    }
   };
 
   const filterNotPendingItems = (items: any) => {
