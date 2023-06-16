@@ -54,6 +54,7 @@ function CreateCosmosApp({ Component, pageProps }: AppProps) {
       wrappedWithChakra={true}
       signerOptions={signerOptions}
       walletModal={TailwindModal}
+      // includeAllWalletsOnMobile={true}
     >
       <ThemeProvider>
         <div className="min-h-screen text-black bg-white dark:bg-gray-bg dark:text-white">
