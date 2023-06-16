@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import folderShapeSVG from "../public/images/folder-svgrepo-com.svg";
+// import folderShapeSVG from "/images/folder-svgrepo-com.svg";
 import {
   UPLOADING_FILE_TYPES,
   pinDirectoryToPinata,
@@ -19,7 +19,7 @@ const UploadItems = ({
   isCommunityMember,
   currentNetworkSymbol,
   currentUser,
-  currentConsideringCollId,
+  consideringCollId,
 }) => {
   const [imageFileList, setImageFileList] = useState([]);
   const [jsonFileList, setJsonFileList] = useState([]);
@@ -190,7 +190,7 @@ const UploadItems = ({
                 fill="none"
                 viewBox="0 0 48 48"
                 aria-hidden="true"
-                src={folderShapeSVG}
+                src={"/images/folder-svgrepo-com.svg"}
                 alt="folder"
               />
               <div className="flex justify-center text-sm text-neutral-6000 dark:text-neutral-300 w-full">
@@ -246,7 +246,7 @@ const UploadItems = ({
                 fill="none"
                 viewBox="0 0 48 48"
                 aria-hidden="true"
-                src={folderShapeSVG}
+                src={"/images/folder-svgrepo-com.svg"}
                 alt="folder"
               />
               <div className="flex justify-center text-sm text-neutral-6000 dark:text-neutral-300 w-full">

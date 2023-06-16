@@ -11,6 +11,7 @@ import {
   DEFAULT_BULK_MINT_PREVIEW_IMAGE,
   FILE_TYPE,
   HOMMIS_COLLECTION,
+  TEST_COLLECTION,
   MAX_DISPLAY_NuMBER_OF_ARCH_SWIPER,
   MINTING_PRICE_LIST,
   PINATA_GATEWAY,
@@ -88,6 +89,7 @@ export default function Home() {
   );
   const [currentConsideringCollId, setCurrentConsideringCollId] = useState(
     HOMMIS_COLLECTION._id
+    // TEST_COLLECTION._id
   );
   const [currentUser, setCurrentUser] = useState(null);
   const [isCommunityMember, setIsCommunityMember] = useState(false);
@@ -113,7 +115,8 @@ export default function Home() {
   const [totalItems, setTotalItems] = useState(0);
   const [collsOfCurrentNetwork, setCollsOfCurrentNetwork] = useState([]);
   const [selectedColl, setSelectedColl] = useState({
-    ...HOMMIS_COLLECTION,
+    ...HOMMIS_COLLECTION
+    // ...TEST_COLLECTION
   });
   const [availableItemsForMint, setAvailableItemsForMint] = useState(
     Array<any>
@@ -489,12 +492,13 @@ export default function Home() {
   };
 
   const handleApplyNewPrice = () => {
+    console.log(typeof currentConsideringCollId)
     if (
       !currentConsideringCollId ||
       currentConsideringCollId === null ||
       currentConsideringCollId === "" ||
       (
-        typeof currentConsideringCollId === undefined &&
+        typeof currentConsideringCollId === "string" &&
         currentConsideringCollId
       ).toString().length !== 24
     ) {
@@ -814,6 +818,7 @@ export default function Home() {
                             .replace("ipfs://", ""),
                     collectionId: selectedColl?._id || "",
                     creator: HOMMIS_COLLECTION.owner || "",
+                    // creator: TEST_COLLECTION.owner || "",
                     owner: currentUser?._id || "",
                     fileType: getFIleType(notMintedItems[0].image),
                     isSale: 0,
@@ -1892,7 +1897,7 @@ export default function Home() {
             isCommunityMember={isCommunityMember}
             currentNetworkSymbol={currentNetworkSymbol}
             currentUser={currentUser}
-            currentConsideringCollId={currentConsideringCollId}
+            consideringCollId={currentConsideringCollId}
           />
 
           <ModalUploadingWL

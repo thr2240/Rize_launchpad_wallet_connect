@@ -310,6 +310,32 @@ export const HOMMIS_COLLECTION = {
   owner: "64581f1ed49db83d4031079f",
 };
 
+export const TEST_COLLECTION = {
+  address: "core1g6u3ejlvh0kggw0m9r8yehgr6hq4nftj6dry6pnd53jjay66hexqek84st",
+  cw721address:
+    "core1yset4m9m6lrpyz7s8nlc2r2adretctcjvfzsx9akf2dj6c95xqmqtnpqx2",
+  collectionNumber: 47,
+  metaData: "",
+  items: [],
+  chainName: "coreum",
+  networkSymbol: 1,
+  isMemberCollection: false,
+  jsonFolderCID: "",
+  mintedCountOfCID: "0",
+  totalItemNumberInCID: "1000",
+  mintingPrice: "350",
+  _id: "648cbdfcefa626151998cb49",
+  name: "CoreumTestCollection",
+  logoURL: "8f3072ff928c004d332d6f601869f4b4.jpg",
+  bannerURL: "de53785903cfad55b72e650b5611da3c.jpg",
+  description:
+    "",
+  terms: "",
+  category: 1,
+  price: 0 ,
+  owner: "643cf0d37c81d21a1c351d4a",
+};
+
 export const COMPENSATION_ARRAY = [
   "core1xle6485jdpazywlxpxxtq29396d2ckhxf70wwr",
 ];
