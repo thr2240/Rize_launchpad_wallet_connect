@@ -424,6 +424,9 @@ export default function Home() {
         .then((response: any) => {
           let isM = (response as any).data.data || false;
           setIsCommunityMember(isM);
+        })
+        .catch((error) => {
+          setIsInMintingWL(false);
         });
       axios
         .post(`${config.baseUrl}users/isInMintingWL`, {
@@ -431,11 +434,12 @@ export default function Home() {
         })
         .then((response: any) => {
           let isM = (response as any).data.data || false;
-          setIsCommunityMember(isM);
+          setIsInMintingWL(isM);
+        })
+        .catch((error) => {
+          setIsInMintingWL(false);
         });
-    } catch (error) {
-      setIsCommunityMember(false);
-    }
+    } catch (error) {}
   };
 
   const handleSelectNetwork = async (networkSymbol: number) => {
