@@ -253,7 +253,6 @@ export default function Home() {
 
   useEffect(() => {
     if (!isEmpty(address || "")) {
-      console.log("address    >>>>>>>> ");
       LoginWithCosmWallet();
       checkIsCommunityMember(address as string);
     }
@@ -293,12 +292,12 @@ export default function Home() {
 
           for (let idx = 0; idx < updatedColl?.totalItemNumberInCID; idx++) {
             if (updatedColl?.mintedArray[idx]) continue;
-            if(maxCount > 9) break;
+            if (maxCount > 9) break;
             try {
               let url = `${PINATA_GATEWAY}${updatedColl.jsonFolderCID}/${1 + Number(idx)}.json`;
               let item = await axios.get(url);
               notMintedItems.push(item.data);
-              maxCount ++;
+              maxCount++;
             } catch (err) {
               continue;
             }
@@ -434,6 +433,7 @@ export default function Home() {
         });
       axios
         .post(`${config.baseUrl}users/isInMintingWL`, {
+          collectionId: "645a7501069be7750b397759",
           wallet: address || "",
         })
         .then((response: any) => {
@@ -793,10 +793,12 @@ export default function Home() {
               let imageList = [] as Array<any>;
               let logoList = [] as Array<any>;
               let attributesList = [] as Array<any>;
+              let descList = [] as Array<any>;
               for (let idx = 0; idx < mintingIndexArray.length; idx++) {
                 let url = `${PINATA_GATEWAY}${(detailedCollection as any).jsonFolderCID
                   }/${Number(mintingIndexArray[idx]) + Number(1)}.json`;
-                uris.push(url);
+                uris.push(`${(detailedCollection as any).jsonFolderCID
+                  }/${Number(mintingIndexArray[idx]) + Number(1)}.json`);
                 promisesForfetching.push(axios.get(url));
               }
               Promise.all(promisesForfetching)
@@ -811,6 +813,7 @@ export default function Home() {
                         : responses[idx1].data.image.toString().replace("ipfs://", "")
                     );
                     attributesList.push(responses[idx1].data.attributes || []);
+                    descList.push(responses[idx1].data.description || []);
                   }
                   //read item(name, description, image, attibutes)s
 
@@ -820,8 +823,9 @@ export default function Home() {
                     itemLogoURL: logoList,
                     collectionId: selectedColl?._id || "",
                     creator: HOMMIS_COLLECTION.owner || "",
+                    descList: descList,
                     // creator: TEST_COLLECTION.owner || "",
-                    owner: currentUser?._id || "",
+                    owner: (currentUser as any)?._id || "",
                     fileType: getFIleType(notMintedItems[0].image),
                     isSale: 0,
                     price: 0,
@@ -835,6 +839,7 @@ export default function Home() {
                     networkSymbol: currentNetworkSymbol || 1,
                     coreumPaymentUnit: coreumPaymentCoin,
                   };
+                  // console.log(params);
                   await saveMultipleItem(params, fmint);
 
                   refreshWithNotMintedItems();
@@ -892,6 +897,14 @@ export default function Home() {
     setFetchingBalance(false);
   };
 
+  const saveMultipleItemActivity = (params: any) => {
+    axios
+      .post(`${config.API_URL}api/itemActivity/multipleCreate`, {
+        ...params,
+      })
+      .then((response) => {})
+      .catch((error) => {});
+  };
   const saveMultipleItem = async (
     params: any,
     fmint = false
@@ -947,6 +960,14 @@ export default function Home() {
                     .then((response) => {
                       if (response.data.code === 0) {
                         toast.success("You've created NFTs successfully.");
+
+                        let paramsActs = {
+                          items: IdArray,
+                          origin: (currentUser as any)?._id,
+                          transactionHash: txHash,
+                          actionType: 5//ITEM_ACTION_TYPES.MINTED,
+                        };
+                        saveMultipleItemActivity(paramsActs);
                         axios
                           .post(
                             `${config.API_URL}api/collection/increaseMintedCount`,
