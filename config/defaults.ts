@@ -346,7 +346,7 @@ export const IS_TEST = false;
 export const ACTIVE_CHAINS = EVM_MAINNETS_LIST;
 
 export const MAX_DISPLAY_NuMBER_OF_ARCH_SWIPER = 9;
-export const PINATA_GATEWAY = "https://cloudflare-ipfs.com/ipfs/";
+export const PINATA_GATEWAY = "https://nftstorage.link/ipfs/";//"https://cloudflare-ipfs.com/ipfs/";
 // "https://silver-rapid-shrimp-610.mypinata.cloud/ipfs/";
 export const BACKEND_API_URL = "https://rize2day.com/api/";
 export const MINTING_PRICE_LIST = {

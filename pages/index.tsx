@@ -192,7 +192,7 @@ export default function Home() {
             setDetailedCollection(updatedColl);
           }
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }, 1000);
   }, []);
 
@@ -208,22 +208,21 @@ export default function Home() {
         setWeb3Modal(web3modl as any);
       }
       loadClient();
-    } catch (error: any) {}
+    } catch (error: any) { }
   }, []);
 
   useEffect(() => {
     let dateTimeStrInterval = setInterval(() => {
       let nowTime = new Date();
-      let datetimestr = `${nowTime.getDate()}-${
-        nowTime.getMonth() + 1
-      }-${nowTime.getFullYear()} ${nowTime.getHours()}h GMT`;
+      let datetimestr = `${nowTime.getDate()}-${nowTime.getMonth() + 1
+        }-${nowTime.getFullYear()} ${nowTime.getHours()}h GMT`;
       setPublicMintDate(datetimestr);
     }, 10000);
     return () => {
       if (dateTimeStrInterval) {
         try {
           clearInterval(dateTimeStrInterval);
-        } catch (err) {}
+        } catch (err) { }
       }
     };
   }, []);
@@ -287,21 +286,19 @@ export default function Home() {
           setTotalMinted(filteredItems?.length || 0);
           setMaxCount(
             Number(updatedColl?.totalItemNumberInCID || 0) -
-              Number(updatedColl?.mintedCountOfCID || 0)
+            Number(updatedColl?.mintedCountOfCID || 0)
           );
           let notMintedItems = [];
+          let maxCount = 0;
 
-          let maxCount =
-            Number(updatedColl?.totalItemNumberInCID || 0) -
-            Number(updatedColl?.mintedCountOfCID || 0);
-          if (maxCount > 9) maxCount = 9;
-          for (let idx = 1; idx < maxCount + 1; idx++) {
+          for (let idx = 0; idx < updatedColl?.totalItemNumberInCID; idx++) {
+            if (updatedColl?.mintedArray[idx]) continue;
+            if(maxCount > 9) break;
             try {
-              let url = `${PINATA_GATEWAY}${updatedColl.jsonFolderCID}/${
-                Number(updatedColl.mintedCountOfCID) + Number(idx)
-              }.json`;
+              let url = `${PINATA_GATEWAY}${updatedColl.jsonFolderCID}/${1 + Number(idx)}.json`;
               let item = await axios.get(url);
               notMintedItems.push(item.data);
+              maxCount ++;
             } catch (err) {
               continue;
             }
@@ -310,7 +307,7 @@ export default function Home() {
           refreshMintedItems();
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }, [selectedColl]);
 
   const isSupportedNetwork = (currentNetwork: number) => {
@@ -354,7 +351,7 @@ export default function Home() {
         }
         setSigningClient(sicl as any);
         return sicl;
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -375,7 +372,7 @@ export default function Home() {
           router.push("/");
         }
       })
-      .catch(function (error: any) {});
+      .catch(function (error: any) { });
   };
 
   const LoginWithCosmWallet = () => {
@@ -395,7 +392,7 @@ export default function Home() {
           router.push("/");
         }
       })
-      .catch(function (error: any) {});
+      .catch(function (error: any) { });
   };
 
   const onClickConnectEVMWallet = async () => {
@@ -446,7 +443,7 @@ export default function Home() {
         .catch((error) => {
           setIsInMintingWL(false);
         });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleSelectNetwork = async (networkSymbol: number) => {
@@ -531,7 +528,7 @@ export default function Home() {
                       setDetailedCollection(updatedColl);
                     }
                   })
-                  .catch((err: any) => {});
+                  .catch((err: any) => { });
               }, 200);
             } else toast.error("Failed in applying new minting price.");
           })
@@ -637,20 +634,20 @@ export default function Home() {
                         setTotalMinted(filterdItems?.length || 0);
                         setMaxCount(
                           Number(updatedColl?.totalItemNumberInCID || 0) -
-                            Number(updatedColl?.mintedCountOfCID || 0)
+                          Number(updatedColl?.mintedCountOfCID || 0)
                         );
                         setTimeout(() => {
                           refreshWithNotMintedItems();
                         }, 300);
                       }
                     })
-                    .catch((error) => {});
+                    .catch((error) => { });
                 }, 100);
               }
             })
-            .catch((error) => {});
+            .catch((error) => { });
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }
   };
 
@@ -664,9 +661,8 @@ export default function Home() {
       let notMintedItems = [];
       for (let idx = 1; idx < fetchCount + 1; idx++) {
         try {
-          let url = `${PINATA_GATEWAY}${
-            (detailedCollection as any).jsonFolderCID
-          }/${Number(fetchStartId) + Number(idx)}.json`;
+          let url = `${PINATA_GATEWAY}${(detailedCollection as any).jsonFolderCID
+            }/${Number(fetchStartId) + Number(idx)}.json`;
           let item = await axios.get(url);
           notMintedItems.push(item.data);
         } catch (err) {
@@ -698,7 +694,7 @@ export default function Home() {
       .then((response) => {
         setMyItemsOnConsideringColl(response.data.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const handleClickMint = async () => {
@@ -790,12 +786,16 @@ export default function Home() {
             if (mintingIndexArray.length > 0) {
               // read item infomations from pinata
               let notMintedItems = [] as Array<any>;
+
               let promisesForfetching = [] as Array<any>;
               let uris = [] as Array<any>;
+              let nameList = [] as Array<any>;
+              let imageList = [] as Array<any>;
+              let logoList = [] as Array<any>;
+              let attributesList = [] as Array<any>;
               for (let idx = 0; idx < mintingIndexArray.length; idx++) {
-                let url = `${PINATA_GATEWAY}${
-                  (detailedCollection as any).jsonFolderCID
-                }/${Number(mintingIndexArray[idx]) + Number(1)}.json`;
+                let url = `${PINATA_GATEWAY}${(detailedCollection as any).jsonFolderCID
+                  }/${Number(mintingIndexArray[idx]) + Number(1)}.json`;
                 uris.push(url);
                 promisesForfetching.push(axios.get(url));
               }
@@ -803,19 +803,21 @@ export default function Home() {
                 .then(async (responses) => {
                   for (let idx1 = 0; idx1 < responses.length; idx1++) {
                     notMintedItems.push(responses[idx1].data);
+                    nameList.push(responses[idx1].data.name || "");
+                    imageList.push(responses[idx1].data.image.toString().replace("ipfs://", "") || "")
+                    logoList.push(
+                      getFIleType(responses[idx1].data.image) !== FILE_TYPE.IMAGE
+                        ? DEFAULT_BULK_MINT_PREVIEW_IMAGE
+                        : responses[idx1].data.image.toString().replace("ipfs://", "")
+                    );
+                    attributesList.push(responses[idx1].data.attributes || []);
                   }
                   //read item(name, description, image, attibutes)s
 
                   const params = {
-                    itemMusicURL: notMintedItems[0].image
-                      .toString()
-                      .replace("ipfs://", ""),
-                    itemLogoURL:
-                      getFIleType(notMintedItems[0].image) !== FILE_TYPE.IMAGE
-                        ? DEFAULT_BULK_MINT_PREVIEW_IMAGE
-                        : notMintedItems[0].image
-                            .toString()
-                            .replace("ipfs://", ""),
+                    nameList: nameList,
+                    itemMusicURL: imageList,
+                    itemLogoURL: logoList,
                     collectionId: selectedColl?._id || "",
                     creator: HOMMIS_COLLECTION.owner || "",
                     // creator: TEST_COLLECTION.owner || "",
@@ -825,7 +827,7 @@ export default function Home() {
                     price: 0,
                     auctionPeriod: 0,
                     stockAmount: 1,
-                    metaData: "",
+                    metaData: attributesList,
                     timeLength: 0,
                     stockGroupId: new Date().getTime(),
                     chainId: currentNetworkSymbol || 1,
@@ -833,19 +835,19 @@ export default function Home() {
                     networkSymbol: currentNetworkSymbol || 1,
                     coreumPaymentUnit: coreumPaymentCoin,
                   };
-                  await saveMultipleItem(params, notMintedItems, fmint);
+                  await saveMultipleItem(params, fmint);
 
                   refreshWithNotMintedItems();
 
                   setWorking(false);
                 })
-                .catch((error) => {});
+                .catch((error) => { });
             } else {
               toast.warn("The collection hae no remained item for mintng.");
               return;
             }
           })
-          .catch((error) => {});
+          .catch((error) => { });
       }, 5000);
     }
   };
@@ -892,41 +894,11 @@ export default function Home() {
 
   const saveMultipleItem = async (
     params: any,
-    sel_JsonFiles: Array<any>,
     fmint = false
   ) => {
     let countOfMintOperation = mintingCount;
-    console.log(
-      "saveMultipleItem() params ======= ",
-      params,
-      sel_JsonFiles,
-      fmint
-    );
     setWorking(true);
-    const metas = [];
-    let names = [] as Array<any>;
-    let descriptions = [];
-    let paths = [];
-    for (let idx = 0; idx < sel_JsonFiles.length; idx++) {
-      if (sel_JsonFiles.length > 0) {
-        const metaList = [];
-        names.push(sel_JsonFiles[idx].name);
-        descriptions.push(sel_JsonFiles[idx].description);
-        paths.push(sel_JsonFiles[idx].image.toString().replace("ipfs://", ""));
-        const attributes = sel_JsonFiles[idx].attributes;
-        for (let j = 0; j < attributes.length; j++) {
-          const meta = {
-            key: "",
-            value: null,
-          };
-          const attribute = attributes[j];
-          meta.key = attribute.trait_type;
-          meta.value = attribute.value;
-          metaList.push(meta);
-        }
-        metas.push(metaList);
-      }
-    }
+
     if (currentNetworkSymbol === PLATFORM_NETWORKS.COREUM) {
       try {
         let sicl = await getSigningCosmWasmClient();
@@ -946,9 +918,9 @@ export default function Home() {
             (currentUser as any).address,
             selectedColl.address,
             (params as any).metadataURIs,
-            names,
+            (params as any).nameList,
             ((detailedCollection as any)?.mintingPrice || 0) *
-              countOfMintOperation,
+            countOfMintOperation,
             fmint
           );
           //succeed, then update all items with token ids
@@ -960,10 +932,6 @@ export default function Home() {
             await axios
               .post(`${config.API_URL}api/item/bulkcreate522`, {
                 params,
-                names,
-                descriptions,
-                paths,
-                metas,
               })
               .then(async function (response) {
                 if (response.status === 200) {
@@ -1052,10 +1020,6 @@ export default function Home() {
       await axios
         .post(`${config.API_URL}api/item/bulkcreate522`, {
           params,
-          names,
-          descriptions,
-          paths,
-          metas,
         })
         .then(async function (response) {
           if (response.status === 200) {
@@ -1120,7 +1084,7 @@ export default function Home() {
     setTotalMinted(notPendingItems?.length || 0);
     setMaxCount(
       Number(collectionInfo?.totalItemNumberInCID || 0) -
-        Number(collectionInfo?.mintedCountOfCID || 0)
+      Number(collectionInfo?.mintedCountOfCID || 0)
     );
     let notMintedItems = [];
     let maxCount =
@@ -1129,9 +1093,8 @@ export default function Home() {
     if (maxCount > 9) maxCount = 9;
     for (let idx = 1; idx < maxCount + 1; idx++) {
       try {
-        let url = `${PINATA_GATEWAY}${collectionInfo.jsonFolderCID}/${
-          Number(collectionInfo.mintedCountOfCID) + Number(idx)
-        }.json`;
+        let url = `${PINATA_GATEWAY}${collectionInfo.jsonFolderCID}/${Number(collectionInfo.mintedCountOfCID) + Number(idx)
+          }.json`;
         let item = await axios.get(url);
         notMintedItems.push(item.data);
       } catch (err) {
