@@ -132,10 +132,19 @@ export default function Home() {
   const [showUploadingItemsModal, setShowUploadingItemsModal] = useState(false);
   const [detailedCollection, setDetailedCollection] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(null);
-
+  const [cosmo_getAccount, setCosmo_getAccount] = useState<
+    string | undefined
+  >();
+  const [cosmos_signAmino, setCosmos_signAmino] = useState<
+    string | undefined
+  >();
   const { getSigningCosmWasmClient, address, status, getRpcEndpoint } =
     useChain(chainName);
+  const [balance, setBalance] = useState(new BigNumber(0));
+  const [isFetchingBalance, setFetchingBalance] = useState(false);
+  const [resp, setResp] = useState("");
   const [client, setClient] = useState(null);
+  const [signingClient, setSigningClient] = useState(null);
   const loadClient = async (rpc = "") => {
     try {
       const temp = await CosmWasmClient.connect(config.RPC_URL);
@@ -877,8 +886,8 @@ export default function Home() {
       .post(`${config.API_URL}api/itemActivity/multipleCreate`, {
         ...params,
       })
-      .then((response) => {})
-      .catch((error) => {});
+      .then((response) => { })
+      .catch((error) => { });
   };
   const saveMultipleItem = async (
     params: any,
