@@ -301,7 +301,7 @@ export const HOMMIS_COLLECTION = {
   _id: "645a7501069be7750b397759",
   name: "Core Homies",
   logoURL: "a4ee88d4c581b0daaa9a77a0b206b9e5.png",
-  bannerURL: "8833e210a506e1b9ab998cc62fb542e1.png",
+  bannerURL: "d1e454b09d293e61960baa0c9170a0f1.jpg",
   description:
     "Core Homies, the first NFT Project to mint on the Coreum Blockchain, is a new and innovative community driven NFT project and part of Blockchain Homies, a cross chain NFT project minting across four networks. ",
   terms: "",

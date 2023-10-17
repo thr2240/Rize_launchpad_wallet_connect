@@ -113,7 +113,6 @@ export default function Home() {
   const [totalMinted, setTotalMinted] = useState(0);
   const [MAX_COUNT, setMaxCount] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const [collsOfCurrentNetwork, setCollsOfCurrentNetwork] = useState([]);
   const [selectedColl, setSelectedColl] = useState({
     ...HOMMIS_COLLECTION
     // ...TEST_COLLECTION
@@ -226,17 +225,6 @@ export default function Home() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    axios
-      .post(`${config.API_URL}api/collection/getCollsOnANetwork`, {
-        networkSymbol: currentNetworkSymbol,
-      })
-      .then((response) => {
-        if (response.data.code === 0)
-          setCollsOfCurrentNetwork(response.data.data);
-      });
-  }, [currentNetworkSymbol]);
 
   useEffect(() => {
     getSignclient();
